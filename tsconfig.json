@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
-    "baseUrl": "src",
-    "outDir": "dist",
+    "baseUrl": "./src",
+    "outDir": "./dist",
     "paths": {
       "@/*": ["*"]
     },
