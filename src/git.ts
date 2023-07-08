@@ -3,6 +3,7 @@
  */
 import { spawnSync, SpawnSyncOptions } from 'child_process'
 import _ from 'lodash'
+import { BuildTask } from './types'
 
 const defaultGitOptions: Partial<SpawnSyncOptions> = {
   cwd: process.cwd(),
@@ -12,10 +13,15 @@ const defaultGitOptions: Partial<SpawnSyncOptions> = {
 }
 
 export function gitExec(params: string[], options?: Partial<SpawnSyncOptions>) {
-  const result = spawnSync(
+  return spawnSync(
     'git',
     params,
     _.defaults(options, defaultGitOptions)
   )
-  return result.stdout.toString()
+}
+
+export async function gitClone(task: BuildTask) {
+  await gitExec(['clone', `https://github.com/${task.project.author}/${task.project.repository}`, '.'], {
+    cwd: task.workspace
+  })
 }
