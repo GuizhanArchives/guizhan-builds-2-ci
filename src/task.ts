@@ -9,6 +9,6 @@ export async function buildTask(project: Project): Promise<BuildTask> {
   console.log(`!> 建立项目任务: ${project.key}`)
 
   return {
-    project,
+    project
   }
 }

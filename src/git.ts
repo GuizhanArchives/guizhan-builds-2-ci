@@ -12,6 +12,10 @@ const defaultGitOptions: Partial<SpawnSyncOptions> = {
 }
 
 export function gitExec(params: string[], options?: Partial<SpawnSyncOptions>) {
-  const result = spawnSync('git', params, _.defaults(options, defaultGitOptions))
+  const result = spawnSync(
+    'git',
+    params,
+    _.defaults(options, defaultGitOptions)
+  )
   return result.stdout.toString()
 }
