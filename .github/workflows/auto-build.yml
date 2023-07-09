@@ -1,0 +1,55 @@
+name: Automatic Build
+
+on:
+  workflow_dispatch: {}
+  schedule:
+  - cron: '*/10 * * * *'
+
+jobs:
+  build:
+    name: Automatic Build
+    runs-on: ubuntu-latest
+
+    env:
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+      ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+      SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+      WEBHOOK_KEY: ${{ secrets.WEBHOOK_KEY }}
+
+    steps:
+    - name: Checking out Repository
+      uses: actions/checkout@master
+
+    - name: Setting up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setting up node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.12.0'
+
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Installing dependencies
+      run: pnpm install
+
+    - name: Run automatic build
+      run: ts-node src/index.ts

@@ -6,15 +6,12 @@ import { getProjects } from './projects'
 import { BuildTask } from './types'
 import { buildTask } from './task'
 import { getLatestCommit } from './github'
-import { getBuilds } from './project'
+import { getBuilds, uploadBadge, uploadBuilds } from './project'
 import { dayjs } from './date'
 import fs from 'fs/promises'
 import { gitClone } from './git'
 import maven from './mavenB'
 import gradle from './gradleB'
-import { BuildInfo, BuildsInfo } from 'guizhan-builds-2-data'
-import { uploadJson, uploadFile } from './r2'
-import { resolve } from 'path'
 
 async function main() {
   console.log('> 初始化项目')
@@ -138,44 +135,9 @@ async function cleanup(task: BuildTask) {
   await fs.rm(task.workspace, { recursive: true })
 
   // 生成构建信息
-  const buildInfo: BuildInfo = {
-    id: task.version as number,
-    commit: task.commit?.sha || '',
-    author: task.commit?.author || '',
-    timestamp: task.commit?.timestamp || Date.now(),
-    message: task.commit?.message || '',
-    success: task.success || false,
-    buildTimestamp: Date.now(),
-    target: task.target || '',
-    sha1: task.sha1 || ''
-  }
-
-  let buildsInfo = await getBuilds(task.project)
-  if (buildsInfo === null) {
-    buildsInfo = {
-      latest: buildInfo.commit,
-      builds: [buildInfo]
-    } as BuildsInfo
-  } else {
-    buildsInfo = {
-      latest: buildInfo.commit,
-      builds: [...buildsInfo.builds, buildInfo]
-    }
-  }
-
-  await uploadJson(`${task.project.author}/${task.project.repository}/${task.project.branch}/builds.json`, buildsInfo)
-
+  await uploadBuilds(task)
   // 生成构建标志
-  let badge = await fs.readFile(resolve(__dirname, '../assets/images/badge.svg'), 'utf-8')
-  if (task.success) {
-    badge = badge.replace('${status}', '成功')
-      .replace('${color}', '#009688')
-  } else {
-    badge = badge.replace('${status}', '失败')
-      .replace('${color}', '#f34436')
-  }
-
-  await uploadFile(`${task.project.author}/${task.project.repository}/${task.project.branch}/badge.svg`, badge, 'image/svg+xml')
+  await uploadBadge(task)
 }
 
 main()
