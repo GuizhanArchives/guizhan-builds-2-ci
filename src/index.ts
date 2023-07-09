@@ -82,7 +82,6 @@ async function check(task: BuildTask): Promise<number | null> {
 }
 
 async function prepare(task: BuildTask, version: number) {
-  console.log(task)
   const date = dayjs(task.commit?.timestamp)
 
   task.finalVersion = task.project.buildOptions.version
