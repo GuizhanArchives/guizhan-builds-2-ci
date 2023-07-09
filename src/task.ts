@@ -1,7 +1,6 @@
 /**
  * 项目任务相关方法
  */
-
 import { Project } from 'guizhan-builds-2-data'
 import { BuildTask } from './types'
 import { resolve } from 'path'
