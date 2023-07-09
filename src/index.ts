@@ -57,7 +57,11 @@ async function main() {
 }
 
 async function check(task: BuildTask): Promise<number | null> {
+  console.log('获取最新 commit')
   const commit = await getLatestCommit(task.project)
+  if (commit == null) {
+    return null
+  }
   if (commit.commit.message.toLowerCase().startsWith('[ci skip]')) {
     console.log('项目跳过构建')
     return null
