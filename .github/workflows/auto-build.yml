@@ -57,4 +57,4 @@ jobs:
       run: pnpm install
 
     - name: Run automatic build
-      run: ts-node src/index.ts
+      run: pnpm run start
