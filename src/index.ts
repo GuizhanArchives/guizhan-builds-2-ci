@@ -12,6 +12,7 @@ import fs from 'fs/promises'
 import { gitClone } from './git'
 import maven from './mavenB'
 import gradle from './gradleB'
+import { notify } from './webhook'
 
 async function main() {
   console.log('> 初始化项目')
@@ -51,7 +52,7 @@ async function main() {
     console.log('执行清理工作')
     await cleanup(task)
 
-    break
+
   }
 }
 
@@ -131,13 +132,16 @@ async function cleanup(task: BuildTask) {
     await gradle.cleanup(task)
   }
 
-  // 删除工作目录
+  console.log('正在清理工作目录')
   await fs.rm(task.workspace, { recursive: true })
 
-  // 生成构建信息
+  console.log('正在上传构建信息')
   await uploadBuilds(task)
-  // 生成构建标志
+  console.log('正在上传构建标识')
   await uploadBadge(task)
+
+  console.log('正在推送通知')
+  await notify(task)
 }
 
 main()
