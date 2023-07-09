@@ -34,6 +34,11 @@ jobs:
       with:
         node-version: '18.12.0'
 
+    - name: Setting up pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8.6.6
+
     - name: Get pnpm store directory
       id: pnpm-cache
       shell: bash
