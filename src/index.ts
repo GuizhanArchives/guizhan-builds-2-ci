@@ -25,14 +25,13 @@ async function main() {
     const project = projects[i]
     console.log('')
     console.log(`> 开始处理项目: ${project.key} (${i + 1}/${projects.length})`)
-    const task = await buildTask(projects[i])
+    let task = await buildTask(projects[i])
 
     const buildVersion = await check(task)
     if (!buildVersion) {
       console.log(`!> 已是最新/无需构建`)
       continue
     }
-
     task.version = buildVersion
 
     console.log(`!> 开始执行构建 #${buildVersion}`)
@@ -51,8 +50,6 @@ async function main() {
 
     console.log('执行清理工作')
     await cleanup(task)
-
-
   }
 }
 
@@ -67,16 +64,17 @@ async function check(task: BuildTask): Promise<number | null> {
     return null
   }
   const buildsInfo = await getBuilds(task.project)
-  if (buildsInfo === null) {
-    return 1
-  }
+
   task.commit = {
     timestamp: dayjs(commit.commit.author?.date as string || Date.now()).valueOf(),
     author: (commit.author?.login ?? commit.commit.author?.name) || '',
     message: commit.commit.message,
     sha: commit.sha
   }
-  if (commit.sha !== buildsInfo.latest) {
+
+  if (buildsInfo === null) {
+    return 1
+  } else if (commit.sha !== buildsInfo.latest) {
     return buildsInfo.builds.length + 1
   } else {
     return null
@@ -84,6 +82,7 @@ async function check(task: BuildTask): Promise<number | null> {
 }
 
 async function prepare(task: BuildTask, version: number) {
+  console.log(task)
   const date = dayjs(task.commit?.timestamp)
 
   task.finalVersion = task.project.buildOptions.version

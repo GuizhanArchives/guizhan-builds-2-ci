@@ -35,11 +35,13 @@ export async function uploadBuilds(task: BuildTask) {
 
   let buildsInfo = await getBuilds(task.project)
   if (buildsInfo === null) {
+    console.log('生成全新构建信息')
     buildsInfo = {
       latest: buildInfo.commit,
       builds: [buildInfo]
     } as BuildsInfo
   } else {
+    console.log('更新构建信息')
     buildsInfo = {
       latest: buildInfo.commit,
       builds: [...buildsInfo.builds, buildInfo]
