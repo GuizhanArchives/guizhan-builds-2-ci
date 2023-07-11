@@ -1,7 +1,7 @@
 /**
  * Gradle 项目相关方法
  */
-import { BuildTask } from "./types"
+import { BuildTask } from "./types";
 
 export async function setVersion(task: BuildTask) {
   //
@@ -15,4 +15,4 @@ export async function cleanup(task: BuildTask) {
   //
 }
 
-export default { setVersion, build, cleanup }
+export default { setVersion, build, cleanup };

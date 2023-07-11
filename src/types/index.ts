@@ -1,4 +1,4 @@
-import { Project } from 'guizhan-builds-2-data'
+import { Project } from "guizhan-builds-2-data";
 
 export interface TaskCommit {
   timestamp: number,
