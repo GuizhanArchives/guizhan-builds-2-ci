@@ -1,7 +1,7 @@
 /**
  * Maven 相关方法
  */
-import { resolve, join } from "path";
+import { resolve } from "path";
 import { BuildTask } from "./types";
 import fs from "fs/promises";
 import { xml2js, js2xml } from "xml-js";
@@ -24,7 +24,7 @@ export async function setVersion(task: BuildTask) {
 }
 
 export async function build(task: BuildTask) {
-  const mvnDir = join(task.workspace, "./.mvn");
+  const mvnDir = resolve(task.workspace, "./.mvn");
   // 如有.mvn目录则移除
   if (await fs.stat(mvnDir).then(() => true).catch(() => false)) {
     await fs.rm(mvnDir, { recursive: true });
@@ -42,7 +42,7 @@ export async function cleanup(task: BuildTask) {
   // 构建成功时上传构建结果
   if (task.success) {
     const target = `${task.project.buildOptions.name}-${task.finalVersion}.jar`;
-    const targetPath = join(task.workspace, "./target", target);
+    const targetPath = resolve(task.workspace, "./target", target);
     await uploadFile(`${task.project.author}/${task.project.repository}/${task.project.branch}/${target}`, targetPath);
 
     // 获取checksum
