@@ -103,8 +103,9 @@ export async function cleanup(task: BuildTask) {
   if (task.success) {
     const suffix = task.project.buildOptions.gradle?.shadowJar ? "-all" : "";
     const target = `${task.project.buildOptions.name}-${task.finalVersion}${suffix}.jar`;
+    const targetFinal = `${task.project.buildOptions.name}-${task.finalVersion}.jar`;
     const targetPath = resolve(task.workspace, "./build/libs", target);
-    await uploadFile(`${task.project.author}/${task.project.repository}/${task.project.branch}/${target}`, targetPath);
+    await uploadFile(`${task.project.author}/${task.project.repository}/${task.project.branch}/${targetFinal}`, targetPath);
 
     // 获取checksum
     task.target = target;
