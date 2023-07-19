@@ -108,7 +108,7 @@ export async function cleanup(task: BuildTask) {
     await uploadFile(`${task.project.author}/${task.project.repository}/${task.project.branch}/${targetFinal}`, targetPath);
 
     // 获取checksum
-    task.target = target;
+    task.target = targetFinal;
     task.sha1 = await getFileSha1(targetPath);
   }
 
