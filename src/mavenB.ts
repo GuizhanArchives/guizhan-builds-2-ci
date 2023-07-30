@@ -16,6 +16,9 @@ export async function setVersion(task: BuildTask) {
     const pomContent = await xml2js(content, { compact: true }) as any;
     pomContent.project.build.finalName._text = "${project.name}-${project.version}";
     pomContent.project.artifactId._text = task.project.buildOptions.name;
+    if (pomContent.project.name) {
+      pomContent.project.name._text = task.project.buildOptions.name;
+    }
     pomContent.project.version._text = task.finalVersion;
     await fs.writeFile(pom, js2xml(pomContent, { compact: true }));
   } catch (e) {
