@@ -6,7 +6,7 @@ import { getProjects } from "./projects";
 import { BuildTask } from "./types";
 import { buildTask } from "./task";
 import { getLatestCommit } from "./github";
-import { getBuilds, uploadBadge, uploadBuilds } from "./project";
+import { getBuilds, uploadBadge, uploadBuilds, updateBuildTime } from "./project";
 import { dayjs } from "./date";
 import fs from "fs/promises";
 import { gitClone } from "./git";
@@ -21,7 +21,7 @@ async function main() {
   console.log(`> 已加载 ${projects.length} 个项目`);
 
   for (let i = 0; i < projects.length; i++) {
-    // if (i >= 1) break
+    // if (i >= 1) break;
     const project = projects[i];
     console.log("");
     console.log(`> 开始处理项目: ${project.key} (${i + 1}/${projects.length})`);
@@ -141,6 +141,8 @@ async function cleanup(task: BuildTask) {
   await uploadBuilds(task);
   console.log("正在上传构建标识");
   await uploadBadge(task);
+  console.log("正在更新构建时间记录");
+  await updateBuildTime(task);
 
   console.log("正在推送通知");
   await notify(task);

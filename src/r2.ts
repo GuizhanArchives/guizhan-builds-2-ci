@@ -1,7 +1,7 @@
 /**
  * Cloudflare R2 相关
  */
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs/promises";
 
 const ACCOUNT_ID = process.env.ACCOUNT_ID || "";
@@ -33,4 +33,19 @@ export async function uploadFile(remotePath: string, localPath: string, contentT
 
 export async function uploadJson(remotePath: string, data: any) {
   return await upload(remotePath, JSON.stringify(data), "application/json");
+}
+
+export async function getJson<T>(remotePath: string): Promise<T | null> {
+  try {
+    const response = await S3.send(new GetObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: remotePath
+    }));
+    if (!response.Body) {
+      return null;
+    }
+    return JSON.parse(await response.Body.transformToString()) as T;
+  } catch (err) {
+    return null;
+  }
 }

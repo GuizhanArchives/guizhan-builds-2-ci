@@ -8,11 +8,12 @@ export interface TaskCommit {
 }
 
 export interface BuildTask {
-  project: Project,
-  version?: number,
+  project: Project
+  buildTime: number
+  workspace: string
+  version?: number
   commit?: TaskCommit
   finalVersion?: string
-  workspace: string,
   success?: boolean
   target?: string
   sha1?: string

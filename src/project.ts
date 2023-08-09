@@ -2,9 +2,8 @@
  * 单个项目相关
  */
 import { Project, BuildInfo, BuildsInfo } from "guizhan-builds-2-data";
-import { request } from "./request";
 import { BuildTask } from "./types";
-import { uploadJson, upload } from "./r2";
+import { uploadJson, upload, getJson } from "./r2";
 import fs from "fs/promises";
 import { resolve } from "path";
 import { sleep } from "./utils";
@@ -17,7 +16,10 @@ export async function getBuilds(project: Project): Promise<BuildsInfo | null> {
 
   while (retryTimes <= maxRetryTimes) {
     try {
-      const { data } = await request.get<BuildsInfo>(`https://builds-r2.gzassets.net/${project.author}/${project.repository}/${project.branch}/builds.json`);
+      const data = await getJson<BuildsInfo>(`${project.author}/${project.repository}/${project.branch}/builds.json`);
+      if (data === null) {
+        throw new Error();
+      }
       return data;
     } catch (e) {
       console.log(`?> 获取项目构建信息失败，已重试 ${retryTimes} 次`);
@@ -35,10 +37,10 @@ export async function uploadBuilds(task: BuildTask) {
     id: task.version as number,
     commit: task.commit?.sha || "",
     author: task.commit?.author || "",
-    timestamp: task.commit?.timestamp || Date.now(),
+    timestamp: task.commit?.timestamp || task.buildTime,
     message: task.commit?.message || "",
     success: task.success || false,
-    buildTimestamp: Date.now(),
+    buildTimestamp: task.buildTime,
     target: task.target || "",
     sha1: task.sha1 || ""
   };
@@ -72,4 +74,13 @@ export async function uploadBadge(task: BuildTask) {
   }
 
   await upload(`${task.project.author}/${task.project.repository}/${task.project.branch}/badge.svg`, badge, "image/svg+xml");
+}
+
+export async function updateBuildTime(task: BuildTask) {
+  const buildTime = await getJson<Record<string, number>>("buildTimestamp.json");
+  if (buildTime === null) {
+    return;
+  }
+  buildTime[task.project.key] = task.buildTime;
+  await uploadJson("buildTimestamp.json", buildTime);
 }

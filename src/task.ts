@@ -12,6 +12,7 @@ export async function buildTask(project: Project): Promise<BuildTask> {
 
   return {
     project,
-    workspace: resolve(WORK_DIR, `./workspace/${project.author}/${project.repository}/${project.branch}`)
+    workspace: resolve(WORK_DIR, `./workspace/${project.author}/${project.repository}/${project.branch}`),
+    buildTime: Date.now()
   };
 }
