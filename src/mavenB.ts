@@ -14,7 +14,11 @@ export async function setVersion(task: BuildTask) {
   try {
     const content = await fs.readFile(pom, "utf-8");
     const pomContent = await xml2js(content, { compact: true }) as any;
-    pomContent.project.build.finalName._text = "${project.name}-${project.version}";
+    if (pomContent.project.build.finalName) {
+      pomContent.project.build.finalName._text = "${project.name}-${project.version}";
+    } else {
+      pomContent.project.build.finalName = { _text: "${project.name}-${project.version}" };
+    }
     pomContent.project.artifactId._text = task.project.buildOptions.name;
     if (pomContent.project.name) {
       pomContent.project.name._text = task.project.buildOptions.name;
