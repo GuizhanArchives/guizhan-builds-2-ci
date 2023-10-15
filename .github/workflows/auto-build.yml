@@ -56,5 +56,42 @@ jobs:
     - name: Installing dependencies
       run: pnpm install
 
+    - name: Setup maven
+      uses: whelk-io/maven-settings-xml-action@v21
+      with:
+        servers: |
+          [
+            {
+              "id": "github",
+              "username": "GuizhanBot",
+              "password": "${{ secrets.BOT_TOKEN }}"
+            }
+          ]
+        repositories: |
+          [
+            {
+              "id": "central",
+              "name": "Maven Central",
+              "url": "https://repo1.maven.org/maven2",
+              "releases": {
+                "enabled": "true"
+              },
+              "snapshots": {
+                "enabled": "false"
+              }
+            },
+            {
+              "id": "github-dough",
+              "name": "Github Package StarWishsama/dough",
+              "url": "https://maven.pkg.github.com/StarWishsama/dough",
+              "releases": {
+                "enabled": "true"
+              },
+              "snapshots": {
+                "enabled": "true"
+              }
+            }
+          ]
+
     - name: Run automatic build
       run: pnpm run start
