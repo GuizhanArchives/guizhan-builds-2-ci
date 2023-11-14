@@ -59,8 +59,8 @@ devDependencies:
     specifier: ^5.0.0
     version: 5.0.0(eslint@8.44.0)(prettier@3.1.0)
   guizhan-builds-2-data:
-    specifier: ^0.5.0
-    version: 0.5.0
+    specifier: ^0.6.0
+    version: 0.6.0
   prettier:
     specifier: 3.1.0
     version: 3.1.0
@@ -2205,8 +2205,8 @@ packages:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
     dev: true
 
-  /guizhan-builds-2-data@0.5.0:
-    resolution: {integrity: sha512-F7Lw06rWxc0Sm/bEe1jATdv+/LaC4G5qDEBC2GmMXyxF7aj3gvAhKxpXIqpyXRUtt78teiDjFjKaZy7JV0T5/Q==}
+  /guizhan-builds-2-data@0.6.0:
+    resolution: {integrity: sha512-Cf4GWKJtCl6qzkxCHggC0pXcJLL9q6/V9LIU22P/kYdqroIBTKU5yFLx3JaK9E30ZNZPep3JMmhVPaZ+mltSBw==}
     engines: {node: '>=10'}
     dev: true
 
